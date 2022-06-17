@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GEOSERVER</title>
+    <meta charset="utf-8" />
+	<link rel="stylesheet" href="css.css">
+	<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+	  <link rel="shortcut icon" type="image/x-icon" href="images.png"/>
+
+	<!-- Bibliothèque de base: Leaflet-->
+    <link rel="stylesheet" href="libs/leaflet.css"/>
+	<script src="libs/leaflet.js"></script>
+	<!-- Draw-->
+	<script src= "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw-src.js"></script>
+	<link rel="stylesheet" href= "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css">
+	<script src= "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+	<!-- Slide menu-->
+	<link rel="stylesheet" href="libs/slide_menu/SlideMenu.css" />
+	<script src="libs/slide_menu/SlideMenu.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<!-- GeoCoder-->
+	<link rel="stylesheet" href="libs/Control.OSMGeocoder.css"/>
+	<script src="libs/Control.OSMGeocoder.js"></script>
+	<!-- Overview-->
+	<link rel="stylesheet" href="libs/overview/MiniMap.css" />
+	<script src="libs/overview/MiniMap.js"></script>
+	<!-- Localisation-->
+	<link rel="stylesheet" href="libs/L.Control.Locate.min.css" />
+    <script src="libs/L.Control.Locate.js"></script>
+	<!-- Mouse position-->
+	<link rel="stylesheet" href="libs/L.Control.MousePosition.css" />
+    <script src="libs/L.Control.MousePosition.js"></script>
+	<!-- Navigation Bar-->
+    <link rel="stylesheet" href="libs/NavBar/NavBar.css"/>
+	<script src="libs/NavBar/NavBar.js"></script>	
+	<!-- Font-->
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">	
+	<!-- jquery-->
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<link rel="stylesheet" href="abdi.css">
+	<script src="abdi.js"></script>
+	<style>
+        body {
+            padding: 0;
+            margin: 0;
+			
+        }
+         #map {
+            height: 680px;
+            width: 1490px;
+			margin-left: 5px;
+			
+			
+	
+        }
+		
+    </style>		
+</head>
+<body>
+
+	<header>
+		<label for="menu-cb" class="menu-label">
+		  <svg viewBox="0 0 32 32" fill="#666">
+			<rect x="0" y="4" rx="3" ry="3" width="32" height="3" />
+			<rect x="0" y="14" rx="3" ry="3" width="32" height="3" />
+			<rect x="0" y="24" rx="3" ry="3" width="32" height="3" />
+		  </svg>
+		</label>
+		<input id="menu-cb" type="checkbox" class="menu-cb">
+		<nav class="menu-nav">
+		<img src="_logo.GIF">
+		</nav>
+	  </header>
+	  </div>
+
+	<div class="wrapper">
+   
+    <div class="main_content">
+        <div class="header">Welcome!! Have a nice day.</div>  
+        
+    </div>
+</div>
+    <div id="map"></div>
+    <script>
+		///// Fond de base
+		var OpenStreetMap = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+		var WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+		///// Configuration de la map	
+		var map = L.map('map', {
+				layers: [WorldImagery], /// fond de base
+				center : [36.86314, 4420810.38757],
+/// coordonnées
+				zoom: 11	//// zoom par defaut
+			});
+		/////layers de base		
+		var baseLayers = {
+			"Open Street Map": OpenStreetMap,
+			"World Imagery": WorldImagery
+		};
+
+		///// layers à partir de Geoserver (format WMS)
+		var A = L.tileLayer.wms("http://localhost:8080/geoserver/abdiwebsig/wms", {
+			layers: 'abdiwebsig:test',
+			format: 'image/png',
+			transparent: true,
+			version: '1.1.0',
+			attribution: ""
+		});	
+
+		var B = L.tileLayer.wms("http://localhost:8080/geoserver/commune_lamarsa/wms", {
+			layers: 'commune_lamarsa:ommune de la marsa',
+			format: 'image/png',
+			transparent: true,
+			version: '1.1.0',
+			attribution: ""
+		});	
+
+		
+
+			  
+		///// Groupe layers
+		var overlays = {
+			"commune_lamarsa:ommune de la marsa : abdi":B,
+			"test    ": A,
+			
+			
+			
+		};
+
+		//// Add the Find to the map 
+		var osmGeocoder = new L.Control.OSMGeocoder();
+        map.addControl(osmGeocoder);		
+		///// Add the Overview to the map 
+        var osm2 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+		var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true }).addTo(map);
+		///// Add the scale control to the map
+		L.control.scale().addTo(map);
+		///// Add the Navigation Bar to the map 
+		L.control.navbar({position: 'topleft'}).addTo(map);
+		///// Add the geolocate control to the map
+		
+		///// Add the mouse position to the map 
+		L.control.mousePosition().addTo(map);
+		///// Add the draw feature to the map
+		var drawnItems = new L.FeatureGroup();
+		map.addLayer(drawnItems);
+		///// config draw feature
+		
+		///// Ajout des couches de base + couches geoserver
+		L.control.layers(baseLayers,overlays).addTo(map);
+		/// Popup limite_inter_district
+			
+			var parameters = L.Util.extend(defaultparameters);
+			var URL = owsrootUrl + L.Util.getParamString(parameters);
+			var ajax = $.ajax({
+				url : URL,
+				dataType : 'json',
+				jsonpCallback : 'getJson',
+				success : function (response) {
+				L.geoJson(response, {
+						onEachFeature: function (feature, url) {
+							popupOptions = {maxWidth: 850};
+							var img_url = feature.properties.url ;
+							url.bindPopup("<h3> type : </h3> <p>" + props.type.toUppercase() + "</p> <br> <h3> name : </h3> <p>"+ props.name.toUppercase()+ "</p> "
+								,popupOptions);
+						}
+					}).addTo(map);
+				}
+			});
+    </script>
+	
+    
+</body>
+</html>

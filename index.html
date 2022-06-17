@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+
+	<script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
+	<link rel="stylesheet"  href="style.css">
+  <link rel="shortcut icon" type="image/x-icon" href="images.png"/>
+
+	
+	<link rel="stylesheet"  href="fontawesome-free-5.15.4-web\css\all.css">
+
+  <script src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+  
+  <link rel="stylesheet" href="ol-ext.css">
+  <script src="ol-ext.js"></script> 
+  
+
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script> 
+
+
+
+
+	<title>application </title>
+</head>
+<body>
+  
+	<nav class="navbar navbar-light bg-light">
+     <a class="navbar-brand" href="#">
+     
+APPLICATION WEB SIG
+     </a>
+     </nav>
+     <div class="map" id="mymap"></div>
+
+
+     
+<div class="modal fade" id="startdrawModal" tabindex="-1" role="dialog" aria-labelledby="startdrawModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="startdrawModalLabel" style="margin-left: 170px;">Slect Draw type</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+
+    
+
+
+   <div class="row" >
+
+   	<div class="col-12" style="margin-left: 10px;">
+   <div class="card" >
+  <div class="card-body">
+    <h5 class="card-title">Point</h5>
+    <h6 class="card-subtitle mb-2 text-muted">ATM, Tree, Pole, Bus Stop, etc.</h6>
+    <p class="card-text"><i class="fas fa-map-marked-alt fa-2x"></i></p>
+  
+    <a href="#" onclick="startDraw('Point') " class="card-link">Add Point</a>
+    
+
+
+  </div>
+</div>
+</div>
+
+	<div class="col-12" style="margin-left: 10px;">
+<div class="card" >
+  <div class="card-body">
+    <h5 class="card-title">Line</h5>
+    <h6 class="card-subtitle mb-2 text-muted">Road, River, Telephone Wire, etc.. </h6>
+    <p class="card-text"><i class="fas fa-grip-lines fa-2x"></i></p>
+    
+    <a href="#" onclick="startDraw('LineString') "  class="card-link">Add line</a>
+   
+
+
+  </div>
+</div>
+</div>
+
+	<div class="col-12" style="margin-left: 10px;">
+<div class="card" >
+  <div class="card-body">
+    <h5 class="card-title">Polygon</h5>
+    <h6 class="card-subtitle mb-2 text-muted">Bulding, Garden, Ground, etc..</h6>
+    <p class="card-text"><i class="fas fa-draw-polygon fa-2x"></i></p>
+    
+    <a href="#" onclick="startDraw('Polygon') "  class="card-link">Add Polygon</a>
+    
+
+
+  </div>
+</div>
+</div>
+
+</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+
+<div class="modal fade" id="enterInformationModal" tabindex="-1" role="dialog" aria-labelledby="enterInformationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="enterInformationModalLabel">Enter Feature's Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+
+        
+
+        <div class="form-group">
+    <label for="typeofFatures"> Type of Feature </label>
+    <select class="form-control" id="typeofFatures">
+      
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="exampleInputtext1"> Name </label>
+    <input type="text" class="form-control" id="exampleInputtext1" aria-describedby="textHelp">
+    <small id="textHelp" class="form-text text-muted">Adress,Name,etc.</small>
+  </div>
+
+  <div class="form-group">
+    <label for="exampleInputtext2"> surface </label>
+    <input type="text" class="form-control" id="exampleInputtext2" aria-describedby="textHelp1">
+    <small id="textHelp1" class="form-text text-muted">Adress,Name,etc.</small>
+  </div>
+        
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="clearDrawSource()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="savetodb()">Save Features</button>
+
+        
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+
+    
+
+</body>
+</html>
